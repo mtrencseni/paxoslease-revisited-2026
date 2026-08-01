@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paxoslease"
+version = "0.1.0"
+description = "Checked PaxosLease models and paper artifact"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+# The verification toolchain, pinned: `make venv` installs `.[test]`, and
+# every Makefile target runs against exactly these versions.
+test = [
+  "pytest==9.1.1",
+  "hypothesis==6.156.6",
+  "mypy==1.16.1",
+  "ruff==0.12.1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "python"}
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.setuptools.package-data]
+paxoslease = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+cache_dir = "build/pytest"
+
+[tool.mypy]
+python_version = "3.11"
+cache_dir = "build/mypy"
+files = ["python"]
+strict = true
+ignore_missing_imports = true
+
+[tool.ruff]
+cache-dir = "build/ruff"
+line-length = 100
+target-version = "py311"
+src = ["python"]

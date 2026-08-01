@@ -1,0 +1,22 @@
+# Everything any tool generates: LaTeX auxiliaries, TLC state directories,
+# Python caches.  Disposable; `make clean` removes it.
+build/
+
+# Python environment and editable-install metadata
+.venv/
+*.egg-info/
+*.pyc
+
+# Safety net: the Makefile redirects these into build/ (PYTHONPYCACHEPREFIX,
+# HYPOTHESIS_STORAGE_DIRECTORY, and the cache paths in pyproject.toml), but
+# invoking pytest or TLC by hand outside make can still scatter them.
+__pycache__/
+.pytest_cache/
+.hypothesis/
+.tlacache/
+states/
+
+# Audited third-party sources, re-fetchable by checksum with
+# scripts/fetch_upstream.sh; only the provenance manifest is tracked.
+upstream/*
+!upstream/PROVENANCE.md

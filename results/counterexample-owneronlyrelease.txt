@@ -1,0 +1,356 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Running breadth-first search Model-Checking with fp 6 and seed -46364440933889099 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 1298580] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.19 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /home/mtrencseni/paxoslease/counterexamples/OwnerOnlyRelease.tla
+Parsing file /tmp/Naturals.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/Sequences.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module OwnerOnlyRelease
+Starting... (2026-07-17 12:21:17)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-07-17 12:21:17.
+Progress(19) at 2026-07-17 12:21:20: 257,613 states generated (257,613 s/min), 90,473 distinct states found (90,473 ds/min), 22,869 states left on queue.
+Error: Invariant LeaseExclusivity is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = (p1 :> "idle" @@ p2 :> "idle")
+/\ certDeadline = (p1 :> (a1 :> 0 @@ a2 :> 0) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
+/\ active = {}
+/\ activeBallot = (p1 :> 0 @@ p2 :> 0)
+/\ promised = (a1 :> 0 @@ a2 :> 0)
+/\ accepted = ( a1 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] @@
+  a2 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] )
+/\ now = 0
+/\ usedBallots = {}
+/\ crashedA = {}
+/\ network = {}
+/\ pendingDeadline = (p1 :> 0 @@ p2 :> 0)
+/\ crashedP = {}
+/\ cert = (p1 :> {} @@ p2 :> {})
+/\ quarantineUntil = (a1 :> 0 @@ a2 :> 0)
+/\ pDeadline = (p1 :> 0 @@ p2 :> 0)
+/\ acceptResp = (p1 :> {} @@ p2 :> {})
+/\ pBallot = (p1 :> 0 @@ p2 :> 0)
+/\ okResp = (p1 :> {} @@ p2 :> {})
+
+State 2: <StartAcquire line 154, col 9 to line 170, col 52 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "preparing" @@ p2 :> "idle")
+/\ usedBallots = {1}
+/\ network = { [ballot |-> 1, kind |-> "Prepare", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Prepare", from |-> p1, to |-> a2] }
+/\ pendingDeadline = (p1 :> 2 @@ p2 :> 0)
+/\ pBallot = (p1 :> 1 @@ p2 :> 0)
+
+State 3: <DeliverPrepare line 173, col 5 to line 192, col 52 of module OwnerOnlyRelease>
+/\ promised = (a1 :> 1 @@ a2 :> 0)
+/\ network = { [ballot |-> 1, kind |-> "Prepare", from |-> p1, to |-> a2],
+  [ owner |-> NoOwner,
+    ballot |-> 1,
+    kind |-> "Promise",
+    from |-> a1,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+
+State 4: <DeliverPrepare line 173, col 5 to line 192, col 52 of module OwnerOnlyRelease>
+/\ promised = (a1 :> 1 @@ a2 :> 1)
+/\ network = { [ owner |-> NoOwner,
+    ballot |-> 1,
+    kind |-> "Promise",
+    from |-> a1,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ],
+  [ owner |-> NoOwner,
+    ballot |-> 1,
+    kind |-> "Promise",
+    from |-> a2,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+
+State 5: <DeliverPromise line 210, col 5 to line 224, col 42 of module OwnerOnlyRelease>
+/\ network = { [ owner |-> NoOwner,
+    ballot |-> 1,
+    kind |-> "Promise",
+    from |-> a2,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+/\ okResp = (p1 :> {a1} @@ p2 :> {})
+
+State 6: <DeliverPromise line 210, col 5 to line 224, col 42 of module OwnerOnlyRelease>
+/\ network = {}
+/\ okResp = (p1 :> {a1, a2} @@ p2 :> {})
+
+State 7: <SendAccept line 228, col 9 to line 239, col 76 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "accepting" @@ p2 :> "idle")
+/\ network = { [owner |-> p1, ballot |-> 1, kind |-> "AcceptReq", from |-> p1, to |-> a1],
+  [owner |-> p1, ballot |-> 1, kind |-> "AcceptReq", from |-> p1, to |-> a2] }
+
+State 8: <DeliverAcceptReq line 252, col 5 to line 281, col 42 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> p1, ballot |-> 1, deadline |-> 2] @@
+  a2 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] )
+/\ network = { [owner |-> p1, ballot |-> 1, kind |-> "AcceptReq", from |-> p1, to |-> a2],
+  [ballot |-> 1, deadline |-> 2, kind |-> "Accepted", from |-> a1, to |-> p1] }
+
+State 9: <DeliverAcceptReq line 252, col 5 to line 281, col 42 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> p1, ballot |-> 1, deadline |-> 2] @@
+  a2 :> [owner |-> p1, ballot |-> 1, deadline |-> 2] )
+/\ network = { [ballot |-> 1, deadline |-> 2, kind |-> "Accepted", from |-> a1, to |-> p1],
+  [ballot |-> 1, deadline |-> 2, kind |-> "Accepted", from |-> a2, to |-> p1] }
+
+State 10: <DeliverAccepted line 284, col 5 to line 314, col 42 of module OwnerOnlyRelease>
+/\ certDeadline = (p1 :> (a1 :> 2 @@ a2 :> 0) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
+/\ network = {[ballot |-> 1, deadline |-> 2, kind |-> "Accepted", from |-> a2, to |-> p1]}
+/\ acceptResp = (p1 :> {a1} @@ p2 :> {})
+
+State 11: <DeliverAccepted line 284, col 5 to line 314, col 42 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "idle" @@ p2 :> "idle")
+/\ certDeadline = (p1 :> (a1 :> 2 @@ a2 :> 2) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
+/\ active = {p1}
+/\ activeBallot = (p1 :> 1 @@ p2 :> 0)
+/\ network = {}
+/\ cert = (p1 :> {a1, a2} @@ p2 :> {})
+/\ pDeadline = (p1 :> 2 @@ p2 :> 0)
+/\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {})
+
+State 12: <Tick line 376, col 5 to line 382, col 78 of module OwnerOnlyRelease>
+/\ now = 1
+
+State 13: <Release line 340, col 5 to line 350, col 42 of module OwnerOnlyRelease>
+/\ active = {}
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2] }
+
+State 14: <StartAcquire line 154, col 9 to line 170, col 52 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "preparing" @@ p2 :> "idle")
+/\ usedBallots = {1, 2}
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 2, kind |-> "Prepare", from |-> p1, to |-> a1],
+  [ballot |-> 2, kind |-> "Prepare", from |-> p1, to |-> a2] }
+/\ pendingDeadline = (p1 :> 3 @@ p2 :> 0)
+/\ acceptResp = (p1 :> {} @@ p2 :> {})
+/\ pBallot = (p1 :> 2 @@ p2 :> 0)
+/\ okResp = (p1 :> {} @@ p2 :> {})
+
+State 15: <StartAcquire line 154, col 9 to line 170, col 52 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "preparing" @@ p2 :> "preparing")
+/\ usedBallots = {1, 2, 3}
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 2, kind |-> "Prepare", from |-> p1, to |-> a1],
+  [ballot |-> 2, kind |-> "Prepare", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2] }
+/\ pendingDeadline = (p1 :> 3 @@ p2 :> 3)
+/\ pBallot = (p1 :> 2 @@ p2 :> 3)
+
+State 16: <Tick line 376, col 5 to line 382, col 78 of module OwnerOnlyRelease>
+/\ now = 2
+
+State 17: <DeliverPrepare line 173, col 5 to line 192, col 52 of module OwnerOnlyRelease>
+/\ promised = (a1 :> 2 @@ a2 :> 1)
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 2, kind |-> "Prepare", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [ owner |-> NoOwner,
+    ballot |-> 2,
+    kind |-> "Promise",
+    from |-> a1,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+
+State 18: <DeliverPrepare line 173, col 5 to line 192, col 52 of module OwnerOnlyRelease>
+/\ promised = (a1 :> 2 @@ a2 :> 2)
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [ owner |-> NoOwner,
+    ballot |-> 2,
+    kind |-> "Promise",
+    from |-> a1,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ],
+  [ owner |-> NoOwner,
+    ballot |-> 2,
+    kind |-> "Promise",
+    from |-> a2,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+
+State 19: <DeliverPromise line 210, col 5 to line 224, col 42 of module OwnerOnlyRelease>
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [ owner |-> NoOwner,
+    ballot |-> 2,
+    kind |-> "Promise",
+    from |-> a2,
+    to |-> p1,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+/\ okResp = (p1 :> {a1} @@ p2 :> {})
+
+State 20: <DeliverPromise line 210, col 5 to line 224, col 42 of module OwnerOnlyRelease>
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2] }
+/\ okResp = (p1 :> {a1, a2} @@ p2 :> {})
+
+State 21: <SendAccept line 228, col 9 to line 239, col 76 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "accepting" @@ p2 :> "preparing")
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [owner |-> p1, ballot |-> 2, kind |-> "AcceptReq", from |-> p1, to |-> a1],
+  [owner |-> p1, ballot |-> 2, kind |-> "AcceptReq", from |-> p1, to |-> a2] }
+
+State 22: <DeliverAcceptReq line 252, col 5 to line 281, col 42 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> p1, ballot |-> 2, deadline |-> 4] @@
+  a2 :> [owner |-> p1, ballot |-> 1, deadline |-> 2] )
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a1],
+  [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [owner |-> p1, ballot |-> 2, kind |-> "AcceptReq", from |-> p1, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p1] }
+
+State 23: <DeliverRelease line 353, col 5 to line 364, col 52 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] @@
+  a2 :> [owner |-> p1, ballot |-> 1, deadline |-> 2] )
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a1],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [owner |-> p1, ballot |-> 2, kind |-> "AcceptReq", from |-> p1, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p1] }
+
+State 24: <DeliverPrepare line 173, col 5 to line 192, col 52 of module OwnerOnlyRelease>
+/\ promised = (a1 :> 3 @@ a2 :> 2)
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [owner |-> p1, ballot |-> 2, kind |-> "AcceptReq", from |-> p1, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p1],
+  [ owner |-> NoOwner,
+    ballot |-> 3,
+    kind |-> "Promise",
+    from |-> a1,
+    to |-> p2,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+
+State 25: <DeliverPromise line 210, col 5 to line 224, col 42 of module OwnerOnlyRelease>
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [owner |-> p1, ballot |-> 2, kind |-> "AcceptReq", from |-> p1, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p1] }
+/\ okResp = (p1 :> {a1, a2} @@ p2 :> {a1})
+
+State 26: <DeliverAcceptReq line 252, col 5 to line 281, col 42 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] @@
+  a2 :> [owner |-> p1, ballot |-> 2, deadline |-> 4] )
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p1],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1] }
+
+State 27: <DeliverAccepted line 284, col 5 to line 314, col 42 of module OwnerOnlyRelease>
+/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 2) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
+/\ network = { [ballot |-> 1, kind |-> "Release", from |-> p1, to |-> a2],
+  [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1] }
+/\ acceptResp = (p1 :> {a1} @@ p2 :> {})
+
+State 28: <DeliverRelease line 353, col 5 to line 364, col 52 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] @@
+  a2 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] )
+/\ network = { [ballot |-> 3, kind |-> "Prepare", from |-> p2, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1] }
+
+State 29: <DeliverPrepare line 173, col 5 to line 192, col 52 of module OwnerOnlyRelease>
+/\ promised = (a1 :> 3 @@ a2 :> 3)
+/\ network = { [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1],
+  [ owner |-> NoOwner,
+    ballot |-> 3,
+    kind |-> "Promise",
+    from |-> a2,
+    to |-> p2,
+    acceptedBallot |-> 0,
+    acceptedDeadline |-> 0 ] }
+
+State 30: <DeliverPromise line 210, col 5 to line 224, col 42 of module OwnerOnlyRelease>
+/\ network = {[ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1]}
+/\ okResp = (p1 :> {a1, a2} @@ p2 :> {a1, a2})
+
+State 31: <SendAccept line 228, col 9 to line 239, col 76 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "accepting" @@ p2 :> "accepting")
+/\ network = { [owner |-> p2, ballot |-> 3, kind |-> "AcceptReq", from |-> p2, to |-> a1],
+  [owner |-> p2, ballot |-> 3, kind |-> "AcceptReq", from |-> p2, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1] }
+
+State 32: <DeliverAcceptReq line 252, col 5 to line 281, col 42 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> p2, ballot |-> 3, deadline |-> 4] @@
+  a2 :> [owner |-> NoOwner, ballot |-> 0, deadline |-> 0] )
+/\ network = { [owner |-> p2, ballot |-> 3, kind |-> "AcceptReq", from |-> p2, to |-> a2],
+  [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1],
+  [ballot |-> 3, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p2] }
+
+State 33: <DeliverAcceptReq line 252, col 5 to line 281, col 42 of module OwnerOnlyRelease>
+/\ accepted = ( a1 :> [owner |-> p2, ballot |-> 3, deadline |-> 4] @@
+  a2 :> [owner |-> p2, ballot |-> 3, deadline |-> 4] )
+/\ network = { [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1],
+  [ballot |-> 3, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p2],
+  [ballot |-> 3, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p2] }
+
+State 34: <DeliverAccepted line 284, col 5 to line 314, col 42 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "idle" @@ p2 :> "accepting")
+/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 4) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
+/\ active = {p1}
+/\ activeBallot = (p1 :> 2 @@ p2 :> 0)
+/\ network = { [ballot |-> 3, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p2],
+  [ballot |-> 3, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p2] }
+/\ pDeadline = (p1 :> 3 @@ p2 :> 0)
+/\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {})
+
+State 35: <DeliverAccepted line 284, col 5 to line 314, col 42 of module OwnerOnlyRelease>
+/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 4) @@ p2 :> (a1 :> 4 @@ a2 :> 0))
+/\ network = {[ballot |-> 3, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p2]}
+/\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {a1})
+
+State 36: <DeliverAccepted line 284, col 5 to line 314, col 42 of module OwnerOnlyRelease>
+/\ phase = (p1 :> "idle" @@ p2 :> "idle")
+/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 4) @@ p2 :> (a1 :> 4 @@ a2 :> 4))
+/\ active = {p1, p2}
+/\ activeBallot = (p1 :> 2 @@ p2 :> 3)
+/\ promised = (a1 :> 3 @@ a2 :> 3)
+/\ accepted = ( a1 :> [owner |-> p2, ballot |-> 3, deadline |-> 4] @@
+  a2 :> [owner |-> p2, ballot |-> 3, deadline |-> 4] )
+/\ now = 2
+/\ usedBallots = {1, 2, 3}
+/\ crashedA = {}
+/\ network = {}
+/\ pendingDeadline = (p1 :> 3 @@ p2 :> 3)
+/\ crashedP = {}
+/\ cert = (p1 :> {a1, a2} @@ p2 :> {a1, a2})
+/\ quarantineUntil = (a1 :> 0 @@ a2 :> 0)
+/\ pDeadline = (p1 :> 3 @@ p2 :> 3)
+/\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {a1, a2})
+/\ pBallot = (p1 :> 2 @@ p2 :> 3)
+/\ okResp = (p1 :> {a1, a2} @@ p2 :> {a1, a2})
+
+2984165 states generated, 770503 distinct states found, 3437 states left on queue.
+The depth of the complete state graph search is 37.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 09s at (2026-07-17 12:21:26)

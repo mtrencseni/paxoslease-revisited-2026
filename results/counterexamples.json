@@ -1,0 +1,139 @@
+[
+  {
+    "category": "simulator-execution",
+    "minimal_fix": "quarantine for at least the proposer attempt duration in real time",
+    "scenario": "insufficient-quarantine",
+    "trace": [
+      "violation: lease exclusivity violated: {'p2', 'p1'}"
+    ],
+    "violated_invariant": "lease exclusivity violated: {'p2', 'p1'}"
+  },
+  {
+    "category": "illustrative-example",
+    "minimal_fix": "release must name the exact owner and ballot",
+    "scenario": "owner-only-release",
+    "trace": [
+      "violation: owner-only release erased newer lease"
+    ],
+    "violated_invariant": "owner-only release erased newer lease"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "count quorum responses by distinct acceptor identity",
+    "scenario": "duplicate-quorum-counting",
+    "trace": [
+      "violation: duplicate responses counted as a quorum"
+    ],
+    "violated_invariant": "duplicate responses counted as a quorum"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "include a durable restart epoch or external uniqueness component in ballots",
+    "scenario": "ballot-reuse-after-restart",
+    "trace": [
+      "violation: ballot reused after restart"
+    ],
+    "violated_invariant": "ballot reused after restart"
+  },
+  {
+    "category": "composed-model-execution",
+    "minimal_fix": "client admission requires completed Paxos Phase 1 recovery",
+    "scenario": "skipped-paxos-recovery",
+    "trace": [
+      "violation: skipped recovery ignored a prior accepted value"
+    ],
+    "violated_invariant": "skipped recovery ignored a prior accepted value"
+  },
+  {
+    "category": "illustrative-example",
+    "minimal_fix": "protected resources must reject stale fencing tokens",
+    "scenario": "unfenced-external-effect",
+    "trace": [
+      "new owner writes",
+      "old delayed write is accepted without fencing",
+      "fenced model rejects it"
+    ],
+    "violated_invariant": "unfenced resource accepted delayed stale owner operation"
+  },
+  {
+    "category": "illustrative-example",
+    "minimal_fix": "configuration changes must preserve quorum intersection or wait out old leases",
+    "scenario": "nonintersecting-reconfiguration",
+    "trace": [
+      "violation: old and new lease quorums do not intersect"
+    ],
+    "violated_invariant": "old and new lease quorums do not intersect"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "lease timers must be monotonic elapsed-time measurements with bounded rate error",
+    "scenario": "unsafe-clock-source",
+    "trace": [
+      "violation: wall-clock step made an expired lease look live"
+    ],
+    "violated_invariant": "wall-clock step made an expired lease look live"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "renewal may extend authority only after a fresh accept quorum",
+    "scenario": "renewal-without-quorum",
+    "trace": [
+      "violation: failed renewal extended authority without a quorum"
+    ],
+    "violated_invariant": "failed renewal extended authority without a quorum"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "acceptors must reject lower ballots after promising a higher ballot",
+    "scenario": "stale-accept-overwrites-newer",
+    "trace": [
+      "violation: stale lower-ballot accept overwrote newer promise"
+    ],
+    "violated_invariant": "stale lower-ballot accept overwrote newer promise"
+  },
+  {
+    "category": "simulator-execution",
+    "minimal_fix": "start the attempt deadline when Prepare is sent, so prepare responses expire with the attempt that collected them",
+    "scenario": "late-promise-reuse",
+    "trace": [
+      "violation: lease exclusivity violated: {'p2', 'p1'}"
+    ],
+    "violated_invariant": "lease exclusivity violated: {'p2', 'p1'}"
+  },
+  {
+    "category": "simulator-execution",
+    "minimal_fix": "count a reported own lease as open only while renewing (currently active); a stale own record must block like a foreign lease",
+    "scenario": "stale-owner-open",
+    "trace": [
+      "violation: lease exclusivity violated: {'p2', 'p1'}"
+    ],
+    "violated_invariant": "lease exclusivity violated: {'p2', 'p1'}"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "external reads and writes require either log ordering or fencing",
+    "scenario": "split-brain-read-without-fence",
+    "trace": [
+      "violation: unfenced read was concurrent with a newer owner write"
+    ],
+    "violated_invariant": "unfenced read was concurrent with a newer owner write"
+  },
+  {
+    "category": "simulator-execution",
+    "minimal_fix": "store the attempt deadline as protocol state and check it in the Phase 2 response handler, instead of relying on timer dispatch order",
+    "scenario": "suspended-event-loop",
+    "trace": [
+      "violation: lease exclusivity violated during event-loop suspension: node 0 master until 14330, node 2 master until 8000"
+    ],
+    "violated_invariant": "lease exclusivity violated during event-loop suspension: node 0 master until 14330, node 2 master until 8000"
+  },
+  {
+    "category": "unit-rule",
+    "minimal_fix": "read the clock once per handler, compare before subtracting, and keep deadline arithmetic away from unsigned wraparound",
+    "scenario": "unsigned-expiry-underflow",
+    "trace": [
+      "violation: unsigned expiry subtraction underflowed to 18446744073709551615 and passed the activation margin after the expiry guard had already been cleared"
+    ],
+    "violated_invariant": "unsigned expiry subtraction underflowed to 18446744073709551615 and passed the activation margin after the expiry guard had already been cleared"
+  }
+]

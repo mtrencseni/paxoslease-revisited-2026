@@ -1,0 +1,3 @@
+trace smoke test passed (event schema + invariants on one happy-path acquisition; not TLA+ trace validation)
+events: DeliverAccept, DeliverAccepted, DeliverPrepare, DeliverPromise, StartAcquire
+steps: 13
