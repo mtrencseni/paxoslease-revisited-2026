@@ -258,7 +258,7 @@ Those invariants, eight in the lease layer and all checked by TLC on every run, 
 
 This is a safety argument only.  It does not assert that any proposer eventually obtains a lease.  Liveness requires eventual message delivery, sufficiently accurate timers, and a period during which a quorum of acceptors stays available.  As in Paxos, two proposers can also starve one another with ever higher ballots, which implementations prevent with randomized backoff \cite{ref1}.
 
-\section{The Quarantine Bound Is the Attempt Duration}\label{sec:quarantine}
+\section{The Restart Quarantine Bound}\label{sec:quarantine}
 
 A restarted acceptor has forgotten two kinds of facts, promises and accepted leases, and we must determine how long it should stay silent so that neither can matter.  The answer turns out to be the same for both, and it is smaller than one might expect.
 
