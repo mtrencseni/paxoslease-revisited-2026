@@ -84,7 +84,7 @@ The TLA+ wrappers expected on this machine are `sany`, `tlc`, and `tlapm`. Do no
 | `tla/counterexamples/` | Intentionally weakened variants; TLC finds a two-owner trace for each. |
 | `tla/proof/` | TLAPS support-obligation module. |
 | `python/paxoslease/` | Executable reference model: simulator, composed PaxosLease/Paxos model, timing, tracing, fencing, and the structured witnesses. |
-| `python/demo.py` | Single-file runnable demonstration: the protocol on real timers, plus both machine-found failure modes (`--bug step3`, `--bug stale-owner`). Reading material, not evidence. |
+| `python/demo.py` | Single-file runnable demonstration: correct PaxosLease on real timers, three nodes in one event loop. Reading material, not evidence. |
 | `python/tests/` | Scenario tests, property tests, and contract tests. |
 | `python/scripts/` | Verification pipeline: claim checking, variant generation, recording. |
 | `results/` | Recorded outputs from checks and experiments. |

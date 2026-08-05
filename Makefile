@@ -204,8 +204,8 @@ prove:
 test:
 	$(PYTHON) -m pytest -q
 
-# The single-file demonstration: three nodes on real timers.  Also try
-# `--bug step3` and `--bug stale-owner`.  Reading material, not evidence.
+# The single-file demonstration: correct PaxosLease, three nodes on real
+# timers.  Reading material, not evidence.
 demo:
 	$(PYTHON) python/demo.py
 
