@@ -4,9 +4,9 @@
     "minimal_fix": "quarantine for at least the proposer attempt duration in real time",
     "scenario": "insufficient-quarantine",
     "trace": [
-      "violation: lease exclusivity violated: {'p1', 'p2'}"
+      "violation: lease exclusivity violated: {'p2', 'p1'}"
     ],
-    "violated_invariant": "lease exclusivity violated: {'p1', 'p2'}"
+    "violated_invariant": "lease exclusivity violated: {'p2', 'p1'}"
   },
   {
     "category": "illustrative-example",
@@ -28,7 +28,7 @@
   },
   {
     "category": "unit-rule",
-    "minimal_fix": "include a durable restart epoch or external uniqueness component in ballots",
+    "minimal_fix": "include a durable restart counter or external uniqueness component in ballots",
     "scenario": "ballot-reuse-after-restart",
     "trace": [
       "violation: ballot reused after restart"
@@ -96,18 +96,18 @@
     "minimal_fix": "start the attempt deadline when Prepare is sent, so prepare responses expire with the attempt that collected them",
     "scenario": "late-promise-reuse",
     "trace": [
-      "violation: lease exclusivity violated: {'p1', 'p2'}"
+      "violation: lease exclusivity violated: {'p2', 'p1'}"
     ],
-    "violated_invariant": "lease exclusivity violated: {'p1', 'p2'}"
+    "violated_invariant": "lease exclusivity violated: {'p2', 'p1'}"
   },
   {
     "category": "simulator-execution",
     "minimal_fix": "count a reported own lease as open only while renewing (currently active); a stale own record must block like a foreign lease",
     "scenario": "stale-owner-open",
     "trace": [
-      "violation: lease exclusivity violated: {'p1', 'p2'}"
+      "violation: lease exclusivity violated: {'p2', 'p1'}"
     ],
-    "violated_invariant": "lease exclusivity violated: {'p1', 'p2'}"
+    "violated_invariant": "lease exclusivity violated: {'p2', 'p1'}"
   },
   {
     "category": "unit-rule",

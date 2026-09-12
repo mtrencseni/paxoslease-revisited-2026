@@ -165,7 +165,7 @@ class Proposer:
             return []
         self.promises[msg.src] = msg.lease
         # P2: an own lease counts as open only for a renewal attempt, and
-        # only if the reported instance is the very lease captured as this
+        # only if the reported instance is that exact lease captured as this
         # attempt's renewal base at P1.  A self-owned record under any
         # other ballot is an artifact of an abandoned attempt and must
         # block like a foreign lease.

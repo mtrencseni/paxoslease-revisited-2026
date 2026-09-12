@@ -185,6 +185,7 @@ impl-staleowner:
 # symmetry reduction); recorded evidence, not part of `all`.
 counterexamples-3acceptors:
 	cd tla/counterexamples && ($(TLC) -config LateTimer3.cfg LateTimerSym.tla || true) > ../../results/counterexample-latetimer-3acceptors.txt 2>&1 && grep -q "Invariant LeaseExclusivity is violated" ../../results/counterexample-latetimer-3acceptors.txt
+	cd tla/spec && ($(TLC) -config PaxosLeaseUnsafeQuarantine3.cfg PaxosLeaseSym.tla || true) > ../../results/unsafe-config-3acceptors.txt 2>&1 && grep -q "Invariant LeaseExclusivity is violated" ../../results/unsafe-config-3acceptors.txt
 
 expected-counterexamples:
 	$(PYTHON) python/scripts/run_counterexamples.py

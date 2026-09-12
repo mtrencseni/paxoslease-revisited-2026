@@ -6,7 +6,7 @@ algorithm of Section 4, written to be read in one sitting and run in a few
 seconds.  Three nodes live in one asyncio event loop, each hosting the
 three roles (proposer, acceptor, learner), and every method names the
 paper step it implements: P1..P5 on the proposer, A1/A2/A4 on the
-acceptor, L1 on the learner, T1/T2/T3 as the timing rules.
+acceptor, L1 on the learner, T1/T2/T3/T4 as the timing rules.
 
 This is correct PaxosLease and nothing else.  Where the paper shows that a
 plausible alternative to a rule is unsafe, the comment at that rule says
@@ -15,17 +15,17 @@ here.  They live as weakened TLA+ variants under tla/counterexamples/,
 where a model checker rather than a print statement demonstrates the
 two-owner execution.
 
-This program is a demonstration, not evidence.  The safety burden is
-carried by the TLA+ models, the TLAPS obligations, and the deterministic
-test bench under python/paxoslease/; this file exists so that a reader can
-watch the protocol behave against real clocks.
+This program is a demonstration, not evidence.  TLC checks the finite
+models, TLAPS proves the timing arithmetic, and the deterministic models
+under python/paxoslease/ test specific schedules.  This file exists so that
+a reader can watch the protocol behave against real clocks.
 
 Run it:
 
     python python/demo.py            # an owner emerges, renews, dies, fails over
     python python/demo.py --fast     # the same with short timers (tests)
 
-One honesty note: the scenario crashes acceptor roles while proposer roles
+Note that the scenario crashes acceptor roles while proposer roles
 keep running, which is the setting of the paper's base model.  In a
 deployment where the roles share a process, a crash restarts both, and the
 paper's implementation audit treats that refinement (colocation).
@@ -238,7 +238,7 @@ class AcceptorRole:
     def restart(self) -> None:
         """A4: refuse every lease-layer message for Q after a restart, so
         that everything this acceptor forgot has expired before it speaks
-        again (T3, and Section 6 of the paper for why Q = D_P suffices)."""
+        again (T3, and Section 7 of the paper for why Q = D_P suffices)."""
         self.crashed = False
         self.quarantine_until = now() + self.timing.quarantine
         log(f"a{self.node_id}", f"restarted, quarantined for {self.timing.quarantine}s")
@@ -289,7 +289,7 @@ class ProposerRole:
         #
         # Moving this assignment below the wait for a prepare quorum, so
         # that the deadline starts when the evidence is about to be used,
-        # would be UNSAFE: the quorum then has unbounded shelf life and no
+        # would be UNSAFE: the prepare quorum then never expires and no
         # finite quarantine covers it.  See "Timer Placement and the
         # Renewal Qualifier" in the paper, which gives the 27-state
         # two-owner execution, and tla/counterexamples/LateTimer.tla.

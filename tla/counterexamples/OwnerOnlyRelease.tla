@@ -101,13 +101,13 @@ ReportLease(a) == IF ValidLease(accepted[a]) THEN accepted[a] ELSE NoLease
 CanParticipateA(a) == a \notin crashedA /\ now >= quarantineUntil[a]
 
 (***************************************************************************)
-(* With AllowRedeliver, every deliver action nondeterministically leaves    *)
-(* the delivered message in the network, so the same message can be         *)
-(* delivered again at any later time: at-least-once delivery with           *)
-(* unbounded redelivery delay.  With AllowRedeliver = FALSE delivery        *)
-(* consumes the message and the transport is at-most-once by construction.  *)
-(* Identical messages sent twice always collapse in the network set either  *)
-(* way; redelivery, not multiplicity, is what this constant controls.       *)
+(* With AllowRedeliver, every deliver action nondeterministically leaves the *)
+(* delivered message in the network, so the same message can be delivered    *)
+(* again at any later time: possible repeated delivery with unbounded        *)
+(* redelivery delay. With AllowRedeliver = FALSE delivery consumes the       *)
+(* message and the transport is at-most-once by construction. Identical      *)
+(* messages sent twice always collapse in the network set either way;        *)
+(* redelivery, not multiplicity, is what this constant controls.             *)
 (***************************************************************************)
 RedeliverChoice == IF AllowRedeliver THEN {TRUE, FALSE} ELSE {FALSE}
 
@@ -192,19 +192,19 @@ DeliverPrepare ==
                         crashedA, quarantineUntil >>
 
 (***************************************************************************)
-(* P2: a promise counts as open if it reports no live lease, or, FOR A      *)
-(* RENEWAL ONLY, a lease owned by this proposer.  The renewal qualifier is  *)
-(* provenance, not style, and it has two parts: the proposer must be        *)
-(* currently active, and the reported instance must be the very lease       *)
-(* being renewed (its ballot equals the active ballot).  A self-owned       *)
-(* record under any other ballot is an artifact of an abandoned attempt,    *)
-(* installed when that attempt's accept request landed late, possibly       *)
-(* overwriting a competitor's live lease without revoking the competitor's  *)
-(* authority; counting it as open licenses a fresh acquisition while the    *)
-(* competitor is still active.  TLC exhibits the two-owner execution in 36  *)
-(* states under PaxosLeaseRetry.cfg when the qualifier is dropped           *)
-(* (counterexamples/StaleOwnerOpen.tla), and no quarantine length prevents  *)
-(* it, since the stale accept request can be delayed arbitrarily.           *)
+(* P2: a promise counts as open if it reports no live lease, or, FOR A       *)
+(* RENEWAL ONLY, a lease owned by this proposer. The renewal qualifier       *)
+(* checks provenance and has two parts: the proposer must be currently       *)
+(* active, and the reported instance must be that exact lease being renewed  *)
+(* (its ballot equals the active ballot). A self-owned record under any      *)
+(* other ballot is an artifact of an abandoned attempt, installed when that  *)
+(* attempt's accept request landed late, possibly overwriting a competitor's *)
+(* live lease without revoking the competitor's authority; counting it as    *)
+(* open licenses a fresh acquisition while the competitor is still active.   *)
+(* TLC exhibits the two-owner execution in 36 states under                   *)
+(* PaxosLeaseRetry.cfg when the qualifier is dropped                         *)
+(* (counterexamples/StaleOwnerOpen.tla), and no quarantine length prevents   *)
+(* it, since the stale accept request can be delayed arbitrarily.            *)
 (***************************************************************************)
 DeliverPromise ==
     \E m \in network, keep \in RedeliverChoice :

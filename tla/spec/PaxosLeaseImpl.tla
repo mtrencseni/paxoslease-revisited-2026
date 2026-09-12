@@ -37,7 +37,7 @@
 (*                                                                          *)
 (* The implementations do not check an attempt deadline in their Phase 2    *)
 (* response handlers (OnProposeResponse checks only the lease expiry), so   *)
-(* DeliverAccepted deliberately carries no such guard here: under delayed   *)
+(* DeliverAccepted deliberately has no such guard here: under delayed       *)
 (* dispatch a stale attempt can activate.  That is the defect, not a        *)
 (* modeling artifact.                                                       *)
 (***************************************************************************)

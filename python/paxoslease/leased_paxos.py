@@ -37,7 +37,8 @@ class LeasedPaxosCluster:
 
     The lease layer decides which process may attempt leadership. Durable Paxos
     acceptor state decides which log values are safe to choose. A node becomes
-    client-ready only after it holds a live lease and has run Paxos Phase 1.
+    client-ready only while it holds a live lease and after completing this
+    leadership epoch's Paxos Phase 1 and every repair round it reported.
     """
 
     proposer_ids: tuple[str, ...] = ("p1", "p2")

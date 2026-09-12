@@ -121,8 +121,9 @@ def scalar_quorum_counting(base: str) -> str:
     acceptor identity.  This is the rule both audited implementations use
     (scalar counters in PLeaseProposer.cpp, membership-check-only vote
     objects in MajorityQuorum.cpp); it is sound only under at-most-once
-    delivery per response, which their TCP transports provide but nothing
-    documents.  The duplicating transport itself is not a weakening: it is
+    delivery per response.  No response-retransmission path was found in the
+    audited sources, but at-most-once delivery across connection replacement
+    is neither proved nor documented.  The duplicating transport itself is not a weakening: it is
     the base module's AllowRedeliver option, switched on in the
     configuration."""
     s = _replace_once(
@@ -249,7 +250,7 @@ def stale_owner_open(base: str) -> str:
     can overwrite a competitor's live lease record with a stale record
     owned by the retrying proposer; counting that record as open licenses
     a fresh acquisition while the competitor is still active.  Both
-    audited implementations carry this rule: StartProposing proceeds with
+    audited implementations implement this rule: StartProposing proceeds with
     a full fresh duration whenever the discovered lease owner is the node
     itself (keyspace PLeaseProposer.cpp, scaliendb PaxosLeaseProposer.cpp),
     active or not."""

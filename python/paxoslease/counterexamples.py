@@ -93,7 +93,7 @@ FIXES = {
     "insufficient-quarantine": "quarantine for at least the proposer attempt duration in real time",
     "owner-only-release": "release must name the exact owner and ballot",
     "duplicate-quorum-counting": "count quorum responses by distinct acceptor identity",
-    "ballot-reuse-after-restart": "include a durable restart epoch or external uniqueness component in ballots",
+    "ballot-reuse-after-restart": "include a durable restart counter or external uniqueness component in ballots",
     "skipped-paxos-recovery": "client admission requires completed Paxos Phase 1 recovery",
     "unfenced-external-effect": "protected resources must reject stale fencing tokens",
     "nonintersecting-reconfiguration": "configuration changes must preserve quorum intersection or wait out old leases",
@@ -349,7 +349,7 @@ def stale_owner_open() -> CounterexampleResult:
     Dropping P2's renewal qualifier (an own lease counts as open even while
     not active) lets a retrying proposer treat the record installed by its
     own abandoned attempt as permission.  Mirrors the 36-state TLC trace for
-    counterexamples/StaleOwnerOpen.tla; both audited implementations carry
+    counterexamples/StaleOwnerOpen.tla; both audited implementations implement
     the unqualified rule (StartProposing proceeds with a full fresh duration
     whenever the discovered lease owner is the node itself)."""
 

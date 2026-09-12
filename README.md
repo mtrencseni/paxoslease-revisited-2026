@@ -23,7 +23,8 @@ The bound tracks the proposer attempt duration, not the acceptor exclusion durat
 - **The pseudocode's timer rule is unsafe.** The 2012 paper is internally
   inconsistent: its Figure 2 starts the proposer's timer before the prepare
   requests, its step-3 pseudocode starts it at prepare-quorum receipt. Under
-  the pseudocode rule a prepare quorum has unbounded shelf life, and TLC
+  the pseudocode rule the attempt has no deadline yet, so arbitrarily old
+  prepare responses stay usable, and TLC
   exhibits two simultaneous lease owners even with the full quarantine
   (`tla/counterexamples/LateTimer.tla`, 27-state trace). The safe rule, starting
   the pending deadline when `Prepare` is sent, is the one the figure draws
@@ -32,10 +33,10 @@ The bound tracks the proposer attempt duration, not the acceptor exclusion durat
   `Quarantine >= Dp`, not `max(Dp, Da)`.** With the prepare-time timer rule, quarantine equal to the
   proposer duration and strictly below the acceptor duration passes an
   exhaustive two-proposer crash/restart check
-  (`tla/spec/PaxosLeaseQuarantineEqualsProposer.cfg`, 21.5M distinct states), and
+  (`tla/spec/PaxosLeaseQuarantineEqualsProposer.cfg`, 20,447,948 distinct states), and
   one unit below the proposer duration TLC exhibits two owners
-  (`tla/spec/PaxosLeaseUnsafeQuarantine.cfg`). An earlier draft claimed the
-  `max` bound; the separated-duration experiment refuted the acceptor half.
+  (`tla/spec/PaxosLeaseUnsafeQuarantine.cfg`). The separated-duration experiment refutes the
+  `max(D_P, D_A)` bound by ruling out its acceptor half.
 
 ## Reproduce
 
@@ -47,7 +48,7 @@ make paper-evidence
 ```
 
 `paper-evidence` is the fail-fast target: it re-runs every result the paper
-cites except the three multi-hour searches, whose recorded outputs under
+cites except the long searches, whose recorded outputs under
 `results/` it instead validates against the paper's cited trace lengths and
 state counts (`python/scripts/check_paper_claims.py`, target `paper-claims`).
 `make paper-evidence-full` re-runs the long searches too. `make results`

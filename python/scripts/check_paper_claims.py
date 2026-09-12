@@ -11,7 +11,7 @@ Two kinds of cited numbers are deliberately NOT checked.  Explored-state
 counts of regenerated violation runs are nondeterministic (parallel TLC
 stops wherever a worker first finds the violation), so the paper cites only
 the stable minimum-depth trace lengths for those.  The MaxNetwork
-sensitivity counts in Section "Checked Models" came from one-off manual
+sensitivity counts in Appendix D came from one-off manual
 runs and are not part of the recorded pipeline.
 """
 
@@ -39,6 +39,7 @@ TRACE_EXPECTATIONS: dict[str, int] = {
     "impl-delayed-shipped.txt": 27,
     "impl-delayed-colocated.txt": 25,
     "unsafe-config-3acceptors.txt": 24,
+    "counterexample-staleowneropen.txt": 36,
     # Transport-realizability refinement (CrashDropsIncoming = TRUE): every
     # trap survives connection semantics, at unchanged trace depths.
     "counterexample-latetimer-tcp.txt": 27,
@@ -101,10 +102,10 @@ TEX_SNIPPETS: list[str] = [
     "36 states",
     "18 states",
     "26 states",
-    "25-state execution",
-    "27-state execution",
+    "25-state trace",
+    "27-state trace",
     "25-state two-owner trace",
-    "24-state two-owner trace",
+    "24-state trace",
     "573,975",
     "7,717",
     "10,059,404",

@@ -37,7 +37,7 @@ lease owners. Run them with `make counterexamples`.
   and then, on the proposer's own retry, is read back as "its own" lease
   everywhere, licensing a fresh acquisition beside the still-active
   competitor. 36-state trace at the full quarantine bound, and no quarantine
-  length prevents it. Both audited implementations carry the unqualified
+  length prevents it. Both audited implementations implement the unqualified
   rule. Multi-hour search (`make counterexamples-staleowner`), recorded
   evidence rather than a default target.
 

@@ -1,6 +1,6 @@
 """Smoke test for the single-file demonstration program.
 
-The demo runs on real wall-clock timers, so this test uses its --fast
+The demo runs on real monotonic-clock timers, so this test uses its --fast
 mode and only asserts the verdict the program itself computes: failover
 keeps ownership exclusive.  The demo is a companion for reading, not part
 of the evidence chain; this test only keeps it from rotting.
