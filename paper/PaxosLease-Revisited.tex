@@ -144,7 +144,7 @@ The timing condition needed for safety is a containment condition.  Whenever acc
 \[
   D_P \leq \gamma \, D_A, \qquad \gamma = \frac{1-\rho}{1+\rho},
 \]
-where $D_P$ is the proposer's local duration, $D_A$ is the acceptor's local exclusion duration, and $\gamma \leq 1$ is the worst-case ratio at which the proposer's clock may run fast while the acceptor's runs slow.  The arithmetic content of this condition, that bounded rates together with the cross-multiplied duration inequality imply real-time containment, is proved in TLAPS as \code{DriftContainmentArithmetic}.
+where $D_P$ is the proposer's local duration, $D_A$ is the acceptor's local exclusion duration, and $\gamma \leq 1$ covers the worst case, in which the proposer's clock runs slow and stretches $D_P$ out in real time while the acceptor's runs fast and uses $D_A$ up early.  The arithmetic content of this condition, that bounded rates together with the cross-multiplied duration inequality imply real-time containment, is proved in TLAPS as \code{DriftContainmentArithmetic}.
 
 When the proposer's timer starts is part of the protocol, not a detail of implementation.  The model starts the pending deadline when \code{Prepare} is sent.  \secref{sec:designspace} shows that the alternative, starting it at prepare-quorum receipt, is unsafe when promises are volatile, and \secref{sec:quarantine} shows that the prepare-time rule is also what makes a small quarantine possible.
 

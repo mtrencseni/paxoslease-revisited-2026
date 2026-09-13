@@ -1,5 +1,5 @@
 TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
-Running breadth-first search Model-Checking with fp 104 and seed -4720964453522562563 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 1865828] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 11 and seed 1952164453939626064 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 859858] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 Parsing file /home/mtrencseni/paxoslease/tla/counterexamples/LateTimer.tla
 Parsing file /tmp/Naturals.tla
 Parsing file /tmp/FiniteSets.tla
@@ -8,10 +8,10 @@ Semantic processing of module Naturals
 Semantic processing of module Sequences
 Semantic processing of module FiniteSets
 Semantic processing of module LateTimer
-Starting... (2026-09-12 14:48:59)
+Starting... (2026-09-13 10:25:32)
 Computing initial states...
-Finished computing initial states: 1 distinct state generated at 2026-09-12 14:48:59.
-Progress(13) at 2026-09-12 14:49:02: 387,322 states generated (387,322 s/min), 101,851 distinct states found (101,851 ds/min), 43,535 states left on queue.
+Finished computing initial states: 1 distinct state generated at 2026-09-13 10:25:32.
+Progress(13) at 2026-09-13 10:25:35: 477,224 states generated (477,224 s/min), 124,202 distinct states found (124,202 ds/min), 52,275 states left on queue.
 Error: Invariant LeaseExclusivity is violated.
 Error: The behavior up to this point is:
 State 1: <Initial predicate>
@@ -143,7 +143,7 @@ State 8: <DeliverPromise line 211, col 5 to line 225, col 42 of module LateTimer
 /\ network = { [ owner |-> NoOwner,
     ballot |-> 1,
     kind |-> "Promise",
-    from |-> a1,
+    from |-> a2,
     to |-> p1,
     acceptedBallot |-> 0,
     acceptedDeadline |-> 0 ],
@@ -161,14 +161,14 @@ State 8: <DeliverPromise line 211, col 5 to line 225, col 42 of module LateTimer
     to |-> p2,
     acceptedBallot |-> 0,
     acceptedDeadline |-> 0 ] }
-/\ okResp = (p1 :> {a2} @@ p2 :> {})
+/\ okResp = (p1 :> {a1} @@ p2 :> {})
 
 State 9: <DeliverPromise line 211, col 5 to line 225, col 42 of module LateTimer>
 /\ network = { [ owner |-> NoOwner,
-    ballot |-> 1,
+    ballot |-> 2,
     kind |-> "Promise",
     from |-> a1,
-    to |-> p1,
+    to |-> p2,
     acceptedBallot |-> 0,
     acceptedDeadline |-> 0 ],
   [ owner |-> NoOwner,
@@ -178,7 +178,7 @@ State 9: <DeliverPromise line 211, col 5 to line 225, col 42 of module LateTimer
     to |-> p2,
     acceptedBallot |-> 0,
     acceptedDeadline |-> 0 ] }
-/\ okResp = (p1 :> {a2} @@ p2 :> {a1})
+/\ okResp = (p1 :> {a1, a2} @@ p2 :> {})
 
 State 10: <DeliverPromise line 211, col 5 to line 225, col 42 of module LateTimer>
 /\ network = { [ owner |-> NoOwner,
@@ -267,11 +267,11 @@ State 23: <DeliverAcceptReq line 253, col 5 to line 282, col 42 of module LateTi
   [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p2] }
 
 State 24: <DeliverAccepted line 285, col 5 to line 315, col 42 of module LateTimer>
-/\ certDeadline = (p1 :> (a1 :> 0 @@ a2 :> 4) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
-/\ network = { [ballot |-> 1, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p1],
+/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 0) @@ p2 :> (a1 :> 0 @@ a2 :> 0))
+/\ network = { [ballot |-> 1, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p1],
   [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p2],
   [ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p2] }
-/\ acceptResp = (p1 :> {a2} @@ p2 :> {})
+/\ acceptResp = (p1 :> {a1} @@ p2 :> {})
 
 State 25: <DeliverAccepted line 285, col 5 to line 315, col 42 of module LateTimer>
 /\ phase = (p1 :> "idle" @@ p2 :> "accepting")
@@ -285,9 +285,9 @@ State 25: <DeliverAccepted line 285, col 5 to line 315, col 42 of module LateTim
 /\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {})
 
 State 26: <DeliverAccepted line 285, col 5 to line 315, col 42 of module LateTimer>
-/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 4) @@ p2 :> (a1 :> 0 @@ a2 :> 4))
-/\ network = {[ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a1, to |-> p2]}
-/\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {a2})
+/\ certDeadline = (p1 :> (a1 :> 4 @@ a2 :> 4) @@ p2 :> (a1 :> 4 @@ a2 :> 0))
+/\ network = {[ballot |-> 2, deadline |-> 4, kind |-> "Accepted", from |-> a2, to |-> p2]}
+/\ acceptResp = (p1 :> {a1, a2} @@ p2 :> {a1})
 
 State 27: <DeliverAccepted line 285, col 5 to line 315, col 42 of module LateTimer>
 /\ phase = (p1 :> "idle" @@ p2 :> "idle")
@@ -310,7 +310,7 @@ State 27: <DeliverAccepted line 285, col 5 to line 315, col 42 of module LateTim
 /\ pBallot = (p1 :> 1 @@ p2 :> 2)
 /\ okResp = (p1 :> {a1, a2} @@ p2 :> {a1, a2})
 
-33941042 states generated, 6100662 distinct states found, 334822 states left on queue.
+33952048 states generated, 6105684 distinct states found, 338527 states left on queue.
 The depth of the complete state graph search is 27.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
-Finished in 45s at (2026-09-12 14:49:44)
+Finished in 46s at (2026-09-13 10:26:18)

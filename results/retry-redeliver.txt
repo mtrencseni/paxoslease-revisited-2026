@@ -1,7 +1,7 @@
 TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
-Running breadth-first search Model-Checking with fp 26 and seed -362725654407073451 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 471751] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.19 x86_64, MSBDiskFPSet, DiskStateQueue).
-Parsing file /home/mtrencseni/paxoslease/spec/PaxosLeaseChecked.tla
-Parsing file /home/mtrencseni/paxoslease/spec/PaxosLease.tla
+Running breadth-first search Model-Checking with fp 75 and seed 9136105753074059970 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 2245970] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /home/mtrencseni/paxoslease/tla/spec/PaxosLeaseChecked.tla
+Parsing file /home/mtrencseni/paxoslease/tla/spec/PaxosLease.tla
 Parsing file /tmp/Naturals.tla
 Parsing file /tmp/FiniteSets.tla
 Parsing file /tmp/Sequences.tla
@@ -10,27 +10,27 @@ Semantic processing of module Sequences
 Semantic processing of module FiniteSets
 Semantic processing of module PaxosLease
 Semantic processing of module PaxosLeaseChecked
-Starting... (2026-07-16 19:38:32)
+Starting... (2026-09-12 17:19:10)
 Computing initial states...
-Finished computing initial states: 1 distinct state generated at 2026-07-16 19:38:32.
-Progress(11) at 2026-07-16 19:38:35: 331,205 states generated (331,205 s/min), 76,296 distinct states found (76,296 ds/min), 42,089 states left on queue.
-Progress(18) at 2026-07-16 19:39:35: 30,395,291 states generated (30,064,086 s/min), 5,805,426 distinct states found (5,729,130 ds/min), 2,324,631 states left on queue.
-Progress(20) at 2026-07-16 19:40:35: 60,424,239 states generated (30,028,948 s/min), 11,015,832 distinct states found (5,210,406 ds/min), 3,793,483 states left on queue.
-Progress(21) at 2026-07-16 19:41:35: 91,152,598 states generated (30,728,359 s/min), 16,053,174 distinct states found (5,037,342 ds/min), 4,795,960 states left on queue.
-Progress(22) at 2026-07-16 19:42:35: 122,354,359 states generated (31,201,761 s/min), 21,048,751 distinct states found (4,995,577 ds/min), 5,611,811 states left on queue.
-Progress(22) at 2026-07-16 19:43:35: 154,580,203 states generated (32,225,844 s/min), 26,135,684 distinct states found (5,086,933 ds/min), 6,253,627 states left on queue.
-Progress(23) at 2026-07-16 19:44:35: 187,692,888 states generated (33,112,685 s/min), 31,178,089 distinct states found (5,042,405 ds/min), 6,676,383 states left on queue.
-Progress(24) at 2026-07-16 19:45:35: 221,551,478 states generated (33,858,590 s/min), 35,720,440 distinct states found (4,542,351 ds/min), 6,273,676 states left on queue.
-Progress(25) at 2026-07-16 19:46:35: 255,465,110 states generated (33,913,632 s/min), 40,062,847 distinct states found (4,342,407 ds/min), 5,512,461 states left on queue.
-Progress(26) at 2026-07-16 19:47:35: 290,385,876 states generated (34,920,766 s/min), 44,268,008 distinct states found (4,205,161 ds/min), 4,443,485 states left on queue.
-Progress(27) at 2026-07-16 19:48:35: 325,051,818 states generated (34,665,942 s/min), 48,248,983 distinct states found (3,980,975 ds/min), 3,120,430 states left on queue.
-Progress(29) at 2026-07-16 19:49:35: 359,331,322 states generated (34,279,504 s/min), 51,938,541 distinct states found (3,689,558 ds/min), 1,546,597 states left on queue.
+Finished computing initial states: 1 distinct state generated at 2026-09-12 17:19:10.
+Progress(11) at 2026-09-12 17:19:13: 328,945 states generated (328,945 s/min), 75,993 distinct states found (75,993 ds/min), 41,992 states left on queue.
+Progress(19) at 2026-09-12 17:20:13: 30,405,921 states generated (30,076,976 s/min), 5,810,433 distinct states found (5,734,440 ds/min), 2,311,015 states left on queue.
+Progress(20) at 2026-09-12 17:21:13: 60,670,741 states generated (30,264,820 s/min), 11,075,595 distinct states found (5,265,162 ds/min), 3,795,068 states left on queue.
+Progress(21) at 2026-09-12 17:22:13: 91,704,140 states generated (31,033,399 s/min), 16,149,659 distinct states found (5,074,064 ds/min), 4,810,904 states left on queue.
+Progress(22) at 2026-09-12 17:23:13: 123,187,526 states generated (31,483,386 s/min), 21,133,398 distinct states found (4,983,739 ds/min), 5,522,669 states left on queue.
+Progress(23) at 2026-09-12 17:24:13: 155,688,610 states generated (32,501,084 s/min), 26,128,628 distinct states found (4,995,230 ds/min), 6,011,717 states left on queue.
+Progress(24) at 2026-09-12 17:25:13: 188,927,072 states generated (33,238,462 s/min), 31,071,629 distinct states found (4,943,001 ds/min), 6,247,746 states left on queue.
+Progress(25) at 2026-09-12 17:26:13: 222,794,357 states generated (33,867,285 s/min), 35,880,081 distinct states found (4,808,452 ds/min), 6,231,031 states left on queue.
+Progress(25) at 2026-09-12 17:27:13: 257,386,252 states generated (34,591,895 s/min), 40,241,071 distinct states found (4,360,990 ds/min), 5,433,461 states left on queue.
+Progress(26) at 2026-09-12 17:28:13: 292,309,051 states generated (34,922,799 s/min), 44,421,119 distinct states found (4,180,048 ds/min), 4,293,392 states left on queue.
+Progress(28) at 2026-09-12 17:29:13: 327,125,681 states generated (34,816,630 s/min), 48,430,186 distinct states found (4,009,067 ds/min), 2,967,724 states left on queue.
+Progress(30) at 2026-09-12 17:30:13: 361,632,534 states generated (34,506,853 s/min), 52,159,381 distinct states found (3,729,195 ds/min), 1,391,599 states left on queue.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
   calculated (optimistic):  val = 9.5E-4
-  based on the actual fingerprints:  val = .0018
+  based on the actual fingerprints:  val = .0016
 380450912 states generated, 53723103 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 34.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 3).
-Finished in 11min 43s at (2026-07-16 19:50:15)
+Finished in 11min 38s at (2026-09-12 17:30:49)

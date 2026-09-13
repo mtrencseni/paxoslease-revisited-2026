@@ -1,5 +1,5 @@
 TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
-Running breadth-first search Model-Checking with fp 119 and seed -9131727128888406031 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 1828168] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 34 and seed 3345979436530765012 with 8 workers on 8 cores with 14267MB heap and 64MB offheap memory [pid: 830597] (Linux 6.1.0-49-amd64 amd64, Debian 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 Parsing file /home/mtrencseni/paxoslease/tla/spec/PaxosLeaseImpl.tla
 Parsing file /tmp/Naturals.tla
 Parsing file /tmp/FiniteSets.tla
@@ -8,11 +8,11 @@ Semantic processing of module Naturals
 Semantic processing of module Sequences
 Semantic processing of module FiniteSets
 Semantic processing of module PaxosLeaseImpl
-Starting... (2026-09-12 14:37:30)
+Starting... (2026-09-13 10:13:30)
 Computing initial states...
-Finished computing initial states: 1 distinct state generated at 2026-09-12 14:37:30.
-Progress(13) at 2026-09-12 14:37:33: 856,238 states generated (856,238 s/min), 242,322 distinct states found (242,322 ds/min), 119,040 states left on queue.
-Progress(22) at 2026-09-12 14:38:33: 46,676,695 states generated (45,820,457 s/min), 9,579,808 distinct states found (9,337,486 ds/min), 2,045,318 states left on queue.
+Finished computing initial states: 1 distinct state generated at 2026-09-13 10:13:30.
+Progress(12) at 2026-09-13 10:13:33: 541,245 states generated (541,245 s/min), 157,808 distinct states found (157,808 ds/min), 80,343 states left on queue.
+Progress(22) at 2026-09-13 10:14:33: 45,528,740 states generated (44,987,495 s/min), 9,356,969 distinct states found (9,199,161 ds/min), 2,013,232 states left on queue.
 Error: Invariant LeaseExclusivity is violated.
 Error: The behavior up to this point is:
 State 1: <Initial predicate>
@@ -312,7 +312,7 @@ State 26: <DeliverAccepted line 278, col 5 to line 308, col 42 of module PaxosLe
 /\ pBallot = (p1 :> 1 @@ p2 :> 2)
 /\ okResp = (p1 :> {a1, a2} @@ p2 :> {a1, a2})
 
-87935650 states generated, 16238242 distinct states found, 1589323 states left on queue.
+88949664 states generated, 16413385 distinct states found, 1588565 states left on queue.
 The depth of the complete state graph search is 26.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
-Finished in 01min 55s at (2026-09-12 14:39:24)
+Finished in 01min 58s at (2026-09-13 10:15:28)
