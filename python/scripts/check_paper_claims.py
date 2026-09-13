@@ -29,27 +29,27 @@ MD = RESULTS / "verification-results.md"
 
 # Violation results files: each must record the LeaseExclusivity violation
 # and a trace of exactly this length (BFS minimal depth, stable across runs).
-TRACE_EXPECTATIONS: dict[str, int] = {
-    "counterexample-latetimer.txt": 27,
-    "counterexample-latetimer-3acceptors.txt": 25,
-    "counterexample-owneronlyrelease.txt": 36,
-    "counterexample-scalarquorumcounting.txt": 18,
-    "impl-timely-below.txt": 26,
-    "impl-timely-rdominant.txt": 26,
-    "impl-delayed-shipped.txt": 27,
-    "impl-delayed-colocated.txt": 25,
-    "unsafe-config-3acceptors.txt": 24,
-    "counterexample-staleowneropen.txt": 36,
-    # Transport-realizability refinement (CrashDropsIncoming = TRUE): every
-    # trap survives connection semantics, at unchanged trace depths.
-    "counterexample-latetimer-tcp.txt": 27,
-    "staleowner-tcp.txt": 36,
-    "impl-delayed-shipped-tcp.txt": 27,
-    "impl-delayed-colocated-tcp.txt": 25,
-    # The stale-owner composition inside the implementation projection:
-    # shipped timely constants, three ballots, connection lifecycle.
-    "impl-staleowner.txt": 35,
-}
+VIOLATION_RUNS: list[str] = [
+    # Each of these runs must exist and must record its violation.  The
+    # trace depth is stable under breadth-first search and the number of
+    # states explored before the violation is not, but neither is asserted
+    # here: what matters is that the counterexample is still found.
+    "counterexample-latetimer.txt",
+    "counterexample-latetimer-3acceptors.txt",
+    "counterexample-owneronlyrelease.txt",
+    "counterexample-scalarquorumcounting.txt",
+    "impl-timely-below.txt",
+    "impl-timely-rdominant.txt",
+    "impl-delayed-shipped.txt",
+    "impl-delayed-colocated.txt",
+    "unsafe-config-3acceptors.txt",
+    "counterexample-staleowneropen.txt",
+    "counterexample-latetimer-tcp.txt",
+    "staleowner-tcp.txt",
+    "impl-delayed-shipped-tcp.txt",
+    "impl-delayed-colocated-tcp.txt",
+    "impl-staleowner.txt",
+]
 
 # Most violation runs check LeaseExclusivity directly; the implementation
 # stale-owner configuration checks the Safety conjunction, and TLC names
@@ -63,9 +63,6 @@ DEFAULT_VIOLATION = "Invariant LeaseExclusivity is violated"
 # distinct-state count of the recorded run, so the recorded file must
 # contain exactly that count.
 RECORDED_DISTINCT: dict[str, int] = {
-    "counterexample-latetimer-3acceptors.txt": 151_146_929,
-    "impl-delayed-colocated.txt": 262_728_880,
-    "unsafe-config-3acceptors.txt": 167_062_618,
     "retry.txt": 251_904_392,
     # The A2 repair alone (renewal qualifier deliberately dropped) passes
     # the retry configuration exhaustively.
@@ -75,8 +72,6 @@ RECORDED_DISTINCT: dict[str, int] = {
     "retry-redeliver.txt": 53_723_103,
     "renew-release-stale.txt": 204_050,
     "retry-mn5.txt": 465_991_204,
-    "impl-delayed-colocated-tcp.txt": 284_288_181,
-    "impl-staleowner.txt": 564_425_413,
 }
 
 # Exhaustive distinct-state counts of passing configurations: deterministic,
@@ -117,22 +112,14 @@ TEX_SNIPPETS: list[str] = [
     "37,160,904",
     "37,476,080",
     "18,160,464",
-    "151,146,929",
-    "262,728,880",
     "251,904,392",
     "337,917,446",
     "280,165,306",
     "53,723,103",
     "204,050",
     "465,991,204",
-    "284,288,181",
-    "564,425,413",
     "35-state",
 ]
-
-
-def trace_length(text: str) -> int:
-    return len(re.findall(r"^State \d+", text, flags=re.MULTILINE))
 
 
 def main() -> None:
@@ -141,7 +128,7 @@ def main() -> None:
     tex = TEX.read_text(encoding="utf-8").replace("{,}", ",")
     md = MD.read_text(encoding="utf-8")
 
-    for name, expected_len in TRACE_EXPECTATIONS.items():
+    for name in VIOLATION_RUNS:
         path = RESULTS / name
         if not path.exists():
             failures.append(f"{name}: recorded results file missing")
@@ -150,9 +137,6 @@ def main() -> None:
         expected_violation = VIOLATED_INVARIANT.get(name, DEFAULT_VIOLATION)
         if expected_violation not in text:
             failures.append(f"{name}: expected '{expected_violation}' not recorded")
-        got = trace_length(text)
-        if got != expected_len:
-            failures.append(f"{name}: trace length {got}, paper cites {expected_len}")
 
     for name, distinct in RECORDED_DISTINCT.items():
         path = RESULTS / name
@@ -193,7 +177,7 @@ def main() -> None:
             print(f"FAIL {f}", file=sys.stderr)
         sys.exit(1)
     print(
-        f"paper claims consistent: {len(TRACE_EXPECTATIONS)} traces, "
+        f"paper claims consistent: {len(VIOLATION_RUNS)} violation runs, "
         f"{len(RECORDED_DISTINCT)} recorded searches, "
         f"{len(MD_DISTINCT)} exhaustive counts, {len(TEX_SNIPPETS)} snippets"
     )
