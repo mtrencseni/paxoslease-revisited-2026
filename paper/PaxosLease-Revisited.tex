@@ -140,13 +140,15 @@ One durability caveat applies to proposers.  Ballots must be globally unique, in
 
 Messages may be delayed, reordered, duplicated, or lost.  A message carries a ballot and, in an accept request, the identity of the proposed lease instance.  Messages do not carry synchronized timestamps.  Each process uses its own elapsed-time measurements to decide whether a lease or a quarantine interval has expired.  Messages are not tied to connections: unless stated otherwise, a message sent before its addressee crashed may be delivered after the restart.  This is the default in the models, which also test the connection-oriented alternative, in which a crash discards the messages addressed to the crashed process; the results hold under both (\secsref{sec:designspace}{sec:checked}).
 
-The timing condition needed for safety is a containment condition.  Whenever acceptor \code{a} accepts a lease for proposer \code{p}, the end of \code{p}'s usable interval must come no later than the end of \code{a}'s exclusion interval.  If all clocks run at the same rate and the proposer starts its timer before the acceptor starts its own, then equal local durations suffice.  If clock rates can differ by at most $\rho$, with rate bounds $r_{min} = 1-\rho$ and $r_{max} = 1+\rho$, then a conservative choice is
+The timing condition needed for safety is a containment condition.  Whenever acceptor \code{a} accepts a lease for proposer \code{p}, the end of \code{p}'s usable interval must come no later than the end of \code{a}'s exclusion interval.  If all clocks run at the same rate and the proposer starts its timer before the acceptor starts its own, then equal local durations suffice.  If clock rates can differ by at most $\rho$, with $0 \leq \rho < 1$ and rate bounds $r_{min} = 1-\rho$ and $r_{max} = 1+\rho$, then a conservative choice is
 \[
   D_P \cdot r_{max} \leq D_A \cdot r_{min},
 \]
-where $D_P$ is the proposer's local duration and $D_A$ is the acceptor's local exclusion duration.  The condition covers the worst case, in which the proposer's clock runs slow and stretches $D_P$ out in real time while the acceptor's runs fast and uses $D_A$ up early.  The arithmetic content of this condition, that bounded rates together with the cross-multiplied duration inequality imply real-time containment, is proved in TLAPS as \code{DriftContainmentArithmetic}.
+where $D_P$ is the proposer's local duration and $D_A$ is the acceptor's local exclusion duration.  The condition covers the worst case, in which the proposer's clock runs slow and stretches $D_P$ out in real time while the acceptor's runs fast and uses $D_A$ up early.  The arithmetic content of this condition, that bounded rates together with the duration inequality imply real-time containment, is proved in TLAPS as \code{DriftContainmentArithmetic}.
 
-The symbols $c$, $\beta$, $\gamma$, $k$ and $\tau$ are deliberately left unused here, so that a companion treatment of participants in relative motion can take them with their standard relativistic meanings.  When the proposer's timer starts is part of the protocol, not a detail of implementation.  The model starts the pending deadline when \code{Prepare} is sent.  \secref{sec:designspace} shows that the alternative, starting it at prepare-quorum receipt, is unsafe when promises are volatile, and \secref{sec:quarantine} shows that the prepare-time rule is also what makes a small quarantine possible.
+The symbols $c$, $\beta$, $\gamma$, $k$ and $\tau$ are deliberately left unused here, so that a companion treatment of participants in relative motion can take them with their standard relativistic meanings.
+
+When the proposer's timer starts is part of the protocol, not a detail of implementation.  The model starts the pending deadline when \code{Prepare} is sent.  \secref{sec:designspace} shows that the alternative, starting it at prepare-quorum receipt, is unsafe when promises are volatile, and \secref{sec:quarantine} shows that the prepare-time rule is also what makes a small quarantine possible.
 
 \section{PaxosLease Algorithm}\label{sec:algorithm}
 
@@ -184,7 +186,7 @@ A lease instance is identified by $(owner, ballot)$.  Ballots are globally uniqu
 
 \invitem{P3 [\code{SendAccept}]}When promises from a quorum are recorded and $now < t_d$: broadcast \code{Accept(b, self)}.
 
-\invitem{P4 [\code{DeliverAccepted}]}On accepted responses for $b$ from a quorum of distinct acceptors, and only if $now < t_d$, checked against the stored deadline inside this transition rather than by any timer callback: become active until $t_d$, record the certificate, and broadcast \code{LearnChosen(self, d)}.
+\invitem{P4 [\code{DeliverAccepted}]}On accepted responses for $b$ from a quorum of distinct acceptors, and only if $now < t_d$, checked against the stored deadline inside this transition rather than by any timer callback: become active until $t_d$, record the certificate, and broadcast \code{LearnChosen(self, t\_d)}.
 
 \invitem{P5 [\code{AbandonAttempt}, then P1]}An attempt that cannot proceed is abandoned: the proposer returns to idle, alive and keeping whatever lease it already holds, and retries with a fresh, higher ballot from P1.  Messages of the abandoned attempt may still be in flight, and the ballot comparison in P2 and P4 discards every response belonging to it.  Retry does not advance the durable restart counter; only a crash and restart does.
 
@@ -295,10 +297,10 @@ suffices, and the acceptor exclusion duration does not appear in the bound at al
 The bound above is stated in the idealized time of the model, where every clock advances at the same rate.  Real clocks do not, and the adjustment is the same one \secref{sec:model} applies to containment.  The attempt is measured on the proposer's clock, which may run slow and stretch $D_P$ out in real time; the quarantine is measured on the restarted acceptor's clock, which may run fast and use its interval up early.  Taking the worst of both with the rate bounds $r_{min} = 1-\rho$ and $r_{max} = 1+\rho$ gives
 
 \[
-  Quarantine \cdot r_{min} \geq D_P \cdot r_{max},
+  D_P \cdot r_{max} \leq Quarantine \cdot r_{min},
 \]
 
-which is the containment condition $D_P \cdot r_{max} \leq D_A \cdot r_{min}$ turned around: the same pair of rate bounds deflates the acceptor duration you may rely on and inflates the quarantine you must serve.  Both follow from the single TLAPS obligation \code{DriftContainmentArithmetic}, once with the acceptor duration and once with the quarantine in its place, and the Python timing module computes both bounds this way.
+the containment condition again, with the quarantine in place of the acceptor duration.  Both follow from the single TLAPS obligation \code{DriftContainmentArithmetic}, and the Python timing module computes both bounds this way.
 
 The bound is the tight worst-case bound under the protocol and failure model stated here, established by the arithmetic lemmas together with finite model checking rather than by a parameterized proof.  What tight means is that both directions are machine-checked at the boundary: quarantine $D_P$ passes and quarantine $D_P - 1$ does not.  \secref{sec:limitations} states where that leaves the claim.
 
@@ -454,7 +456,7 @@ Frontier language models make both encodings fast enough to be routine, with hum
 
 \invitem{\code{ActivationHasQuorum}}An active proposer has a quorum certificate.  A proposer cannot become active merely because it sent requests or received a non-quorum set of responses.
 
-\invitem{\code{TimerContainment}}For every acceptor in an active proposer's certificate, the proposer's deadline comes no later than the acceptor deadline recorded in the certificate.  The certificate variables are history variables (\secref{sec:model}), so the invariant is a statement checked by the model, not a comparison performed by the protocol.
+\invitem{\code{TimerContainment}}For every acceptor in an active proposer's certificate, the proposer's deadline comes no later than the acceptor deadline recorded in the certificate.  The certificate variables are history variables (\secref{sec:algorithm}), so the invariant is a statement checked by the model, not a comparison performed by the protocol.
 
 \invitem{\code{QuarantinePreventsParticipation}}An acceptor in quarantine has no promised ballot and no accepted lease.  Together with the transition rules, this means that a restarted acceptor cannot vote while forgotten lease state could still matter.
 
@@ -486,7 +488,7 @@ Frontier language models make both encodings fast enough to be routine, with hum
 
 \invitem{\code{QuarantineBoundTight}}Any quarantine strictly below the proposer duration leaves an elapsed interval inside a forgotten attempt's lifetime but outside quarantine.  TLC turns this arithmetic gap into the concrete two-owner traces of \secref{sec:quarantine}.
 
-\invitem{\code{DriftContainmentArithmetic}}If the proposer's clock runs at rate at least $r_{min}$, the acceptor's at most $r_{max}$, and the durations satisfy $D_P \cdot r_{max} \leq D_A \cdot r_{min}$, then real-time containment holds.  This is the cross-multiplied form of the inequality of \secref{sec:model}, and the same arithmetic with the quarantine in place of $D_A$ gives the real-time quarantine bound.
+\invitem{\code{DriftContainmentArithmetic}}If the proposer's clock runs at rate at least $r_{min}$, the acceptor's at most $r_{max}$, and the durations satisfy $D_P \cdot r_{max} \leq D_A \cdot r_{min}$, then real-time containment holds.  This is the inequality of \secref{sec:model}, and the same arithmetic with the quarantine in place of $D_A$ gives the real-time quarantine bound.
 
 \section{Inconsistency in the Original Statement}\label{app:latetimer}
 
