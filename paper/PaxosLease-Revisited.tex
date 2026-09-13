@@ -140,13 +140,13 @@ One durability caveat applies to proposers.  Ballots must be globally unique, in
 
 Messages may be delayed, reordered, duplicated, or lost.  A message carries a ballot and, in an accept request, the identity of the proposed lease instance.  Messages do not carry synchronized timestamps.  Each process uses its own elapsed-time measurements to decide whether a lease or a quarantine interval has expired.  Messages are not tied to connections: unless stated otherwise, a message sent before its addressee crashed may be delivered after the restart.  This is the default in the models, which also test the connection-oriented alternative, in which a crash discards the messages addressed to the crashed process; the results hold under both (\secsref{sec:designspace}{sec:checked}).
 
-The timing condition needed for safety is a containment condition.  Whenever acceptor \code{a} accepts a lease for proposer \code{p}, the end of \code{p}'s usable interval must come no later than the end of \code{a}'s exclusion interval.  If all clocks run at the same rate and the proposer starts its timer before the acceptor starts its own, then equal local durations suffice.  If clock rates can differ by at most $\rho$, then a conservative choice is
+The timing condition needed for safety is a containment condition.  Whenever acceptor \code{a} accepts a lease for proposer \code{p}, the end of \code{p}'s usable interval must come no later than the end of \code{a}'s exclusion interval.  If all clocks run at the same rate and the proposer starts its timer before the acceptor starts its own, then equal local durations suffice.  If clock rates can differ by at most $\rho$, with rate bounds $r_{min} = 1-\rho$ and $r_{max} = 1+\rho$, then a conservative choice is
 \[
-  D_P \leq \gamma \, D_A, \qquad \gamma = \frac{1-\rho}{1+\rho},
+  D_P \cdot r_{max} \leq D_A \cdot r_{min},
 \]
-where $D_P$ is the proposer's local duration, $D_A$ is the acceptor's local exclusion duration, and $\gamma \leq 1$ covers the worst case, in which the proposer's clock runs slow and stretches $D_P$ out in real time while the acceptor's runs fast and uses $D_A$ up early.  The arithmetic content of this condition, that bounded rates together with the cross-multiplied duration inequality imply real-time containment, is proved in TLAPS as \code{DriftContainmentArithmetic}.
+where $D_P$ is the proposer's local duration and $D_A$ is the acceptor's local exclusion duration.  The condition covers the worst case, in which the proposer's clock runs slow and stretches $D_P$ out in real time while the acceptor's runs fast and uses $D_A$ up early.  The arithmetic content of this condition, that bounded rates together with the cross-multiplied duration inequality imply real-time containment, is proved in TLAPS as \code{DriftContainmentArithmetic}.
 
-When the proposer's timer starts is part of the protocol, not a detail of implementation.  The model starts the pending deadline when \code{Prepare} is sent.  \secref{sec:designspace} shows that the alternative, starting it at prepare-quorum receipt, is unsafe when promises are volatile, and \secref{sec:quarantine} shows that the prepare-time rule is also what makes a small quarantine possible.
+The symbols $c$, $\beta$, $\gamma$, $k$ and $\tau$ are deliberately left unused here, so that a companion treatment of participants in relative motion can take them with their standard relativistic meanings.  When the proposer's timer starts is part of the protocol, not a detail of implementation.  The model starts the pending deadline when \code{Prepare} is sent.  \secref{sec:designspace} shows that the alternative, starting it at prepare-quorum receipt, is unsafe when promises are volatile, and \secref{sec:quarantine} shows that the prepare-time rule is also what makes a small quarantine possible.
 
 \section{PaxosLease Algorithm}\label{sec:algorithm}
 
@@ -158,7 +158,7 @@ Proposer state is per attempt and volatile, with one durable exception.
 
 \begin{itemize}\itemsep0.25em
 \item the current ballot $b$, and the phase of the attempt (idle, preparing, accepting);
-\item the pending deadline $d$ of the attempt, assigned when \code{Prepare} is broadcast (T1) and stored, not scheduled;
+\item the pending deadline $t_d$ of the attempt, assigned when \code{Prepare} is broadcast (T1) and stored, not scheduled;
 \item the renewal base: the ballot of the lease this attempt renews, or none if the attempt is a fresh acquisition (P1, P2);
 \item the identities of the acceptors that have responded in the current attempt, kept as a set rather than a count (P2);
 \item when active, the authority deadline and the quorum certificate that established the lease;
@@ -178,13 +178,13 @@ A lease instance is identified by $(owner, ballot)$.  Ballots are globally uniqu
 
 \subsection{Proposer}
 
-\invitem{P1 [\code{StartAcquire}]}Choose a fresh ballot $b$, never used by any proposer, including this proposer's own earlier incarnations: counter-major $(counter, restart, node)$, that is, ballots compare lexicographically with $counter$ most significant and $node$ as the final tiebreak, where $counter$ increments per attempt and $restart$ is a durably stored counter incremented at every process start, so no ballot is reused across a crash.  Record as the attempt's \emph{renewal base} the ballot of the lease this proposer currently holds, or none if this is a fresh acquisition; P2 tests self-owned reports against it.  Assign the pending deadline $d := now + D_P$ \emph{as stored state}, and broadcast \code{Prepare(b)}.
+\invitem{P1 [\code{StartAcquire}]}Choose a fresh ballot $b$, never used by any proposer, including this proposer's own earlier incarnations: counter-major $(counter, restart, node)$, that is, ballots compare lexicographically with $counter$ most significant and $node$ as the final tiebreak, where $counter$ increments per attempt and $restart$ is a durably stored counter incremented at every process start, so no ballot is reused across a crash.  Record as the attempt's \emph{renewal base} the ballot of the lease this proposer currently holds, or none if this is a fresh acquisition; P2 tests self-owned reports against it.  Assign the pending deadline $t_d := now + D_P$ \emph{as stored state}, and broadcast \code{Prepare(b)}.
 
 \invitem{P2 [\code{DeliverPromise}]}On a promise for the current $b$: if it reports no live lease, record the responder's \emph{identity} and call the response \emph{open}.  For a renewal attempt, a response is also open, but only when it reports the same owner \emph{and the same ballot} as the active lease captured at P1 as the attempt's renewal base.  Quorums are sets of distinct acceptors, not counts of messages (\secref{sec:audit}, fourth finding).  The renewal clause checks where the reported lease came from, not only who owns it: the attempt records at P1 which lease it is renewing, and P2 admits a self-owned report only if it names that exact lease.  A self-owned record under any other ballot may have been installed by an accept request an abandoned attempt left in flight, and it blocks like a foreign lease (\secref{sec:designspace}).
 
-\invitem{P3 [\code{SendAccept}]}When promises from a quorum are recorded and $now < d$: broadcast \code{Accept(b, self)}.
+\invitem{P3 [\code{SendAccept}]}When promises from a quorum are recorded and $now < t_d$: broadcast \code{Accept(b, self)}.
 
-\invitem{P4 [\code{DeliverAccepted}]}On accepted responses for $b$ from a quorum of distinct acceptors, and only if $now < d$, checked against the stored deadline inside this transition rather than by any timer callback: become active until $d$, record the certificate, and broadcast \code{LearnChosen(self, d)}.
+\invitem{P4 [\code{DeliverAccepted}]}On accepted responses for $b$ from a quorum of distinct acceptors, and only if $now < t_d$, checked against the stored deadline inside this transition rather than by any timer callback: become active until $t_d$, record the certificate, and broadcast \code{LearnChosen(self, d)}.
 
 \invitem{P5 [\code{AbandonAttempt}, then P1]}An attempt that cannot proceed is abandoned: the proposer returns to idle, alive and keeping whatever lease it already holds, and retries with a fresh, higher ballot from P1.  Messages of the abandoned attempt may still be in flight, and the ballot comparison in P2 and P4 discards every response belonging to it.  Retry does not advance the durable restart counter; only a crash and restart does.
 
@@ -205,13 +205,13 @@ Renewal is a new acquisition by the same owner under a higher ballot, entered at
 
 \subsection{Learner}
 
-\invitem{L1}Activation is made application-visible through learners.  The owner's own learner installs the absolute deadline $d$; a remote learner may cache the owner with a conservative local expiry, but only the owner acts on the lease.  A remote learner that measures the duration from the moment the message arrives, rather than from the moment the lease began, is assuming a bound on delivery delay, and that bound must then be stated (\secref{sec:audit}, sixth finding).
+\invitem{L1}Activation is made application-visible through learners.  The owner's own learner installs the absolute deadline $t_d$; a remote learner may cache the owner with a conservative local expiry, but only the owner acts on the lease.  A remote learner that measures the duration from the moment the message arrives, rather than from the moment the lease began, is assuming a bound on delivery delay, and that bound must then be stated (\secref{sec:audit}, sixth finding).
 
 \subsection{Timing rules}
 
 The timing rules are stated as named rules, not as properties implied by the steps.
 
-\invitem{T1 (attempt time bound)}The pending deadline $d$ is assigned when \code{Prepare} is broadcast (P1) and checked in the transitions that use the attempt's evidence (P3, P4).  It is data, not a scheduled callback: a paused process loses its dispatch order, and the deadline must not be lost with it (\secref{sec:audit}, third finding).
+\invitem{T1 (attempt time bound)}The pending deadline $t_d$ is assigned when \code{Prepare} is broadcast (P1) and checked in the transitions that use the attempt's evidence (P3, P4).  It is data, not a scheduled callback: a paused process loses its dispatch order, and the deadline must not be lost with it (\secref{sec:audit}, third finding).
 
 \invitem{T2 (containment)}$D_P \leq D_A$, so an active owner's authority interval is contained in every certificate acceptor's exclusion interval.  With clock-rate error bounds $r_{min}, r_{max}$ the condition is $D_P \cdot r_{max} \leq D_A \cdot r_{min}$ (\secref{sec:model}).
 
@@ -295,10 +295,10 @@ suffices, and the acceptor exclusion duration does not appear in the bound at al
 The bound above is stated in the idealized time of the model, where every clock advances at the same rate.  Real clocks do not, and the adjustment is the same one \secref{sec:model} applies to containment.  The attempt is measured on the proposer's clock, which may run slow and stretch $D_P$ out in real time; the quarantine is measured on the restarted acceptor's clock, which may run fast and use its interval up early.  Taking the worst of both with the rate bounds $r_{min} = 1-\rho$ and $r_{max} = 1+\rho$ gives
 
 \[
-  Quarantine \geq \frac{D_P}{\gamma}, \qquad \gamma = \frac{1-\rho}{1+\rho},
+  Quarantine \cdot r_{min} \geq D_P \cdot r_{max},
 \]
 
-which is the containment condition $D_P \leq \gamma D_A$ turned around: the same $\gamma$ deflates the acceptor duration you may rely on and inflates the quarantine you must serve.  Both follow from the single TLAPS obligation \code{DriftContainmentArithmetic}, once with the acceptor duration and once with the quarantine in its place, and the Python timing module computes both bounds this way.
+which is the containment condition $D_P \cdot r_{max} \leq D_A \cdot r_{min}$ turned around: the same pair of rate bounds deflates the acceptor duration you may rely on and inflates the quarantine you must serve.  Both follow from the single TLAPS obligation \code{DriftContainmentArithmetic}, once with the acceptor duration and once with the quarantine in its place, and the Python timing module computes both bounds this way.
 
 The bound is the tight worst-case bound under the protocol and failure model stated here, established by the arithmetic lemmas together with finite model checking rather than by a parameterized proof.  What tight means is that both directions are machine-checked at the boundary: quarantine $D_P$ passes and quarantine $D_P - 1$ does not.  \secref{sec:limitations} states where that leaves the claim.
 
@@ -309,7 +309,7 @@ We checked it in both directions at two separated duration pairs, on the unmodif
 Two rules of \secref{sec:algorithm} have plausible variants that are unsafe: where the attempt timer starts (T1), and how a proposer reads a prepare response that reports its own lease (P2).  Neither two-owner execution below needs a lost message or a clock error.
 
 \smallskip
-\noindent\textbf{T1: the attempt deadline starts when \code{Prepare} is sent, and it is stored state.}  Acceptor state is volatile, so evidence gathered before a crash must expire at a fixed time after it was created.  T1 assigns $d$ at P1 and checks it at P3 and P4, so the whole attempt, its unprocessed promises included, expires with it.
+\noindent\textbf{T1: the attempt deadline starts when \code{Prepare} is sent, and it is stored state.}  Acceptor state is volatile, so evidence gathered before a crash must expire at a fixed time after it was created.  T1 assigns $t_d$ at P1 and checks it at P3 and P4, so the whole attempt, its unprocessed promises included, expires with it.
 
 The pseudocode of \cite{ref1} starts the timer at prepare-quorum receipt instead.  The attempt then has no timer until the quorum arrives, a prepare quorum stays usable for an unbounded time, and no finite quarantine covers an attempt that has no deadline.  TLC finds the two-owner execution at the full quarantine bound in 27 states with two acceptors, and in 25 states with three acceptors and a single crashed acceptor, the one in the intersection of the two proposers' quorums.  \ref{app:latetimer} walks the execution through and gives the failure in implementation terms.
 
@@ -592,7 +592,7 @@ Unsafe quarantine & $(2,3,1)$ & quarantine one unit below $D_P$, $D_A$ larger & 
 \toprule
 \textbf{Rule} & \textbf{Base module} & \textbf{Variant/projection} & \textbf{Python witness} & \textbf{Source audit} \\
 \midrule[\heavyrulewidth]
-Attempt time bound (P1, T1) & \code{StartAcquire} stores $d$ & \code{LateTimer} & simulator, timer witnesses & unsafe rule shipped \\
+Attempt time bound (P1, T1) & \code{StartAcquire} stores $t_d$ & \code{LateTimer} & simulator, timer witnesses & unsafe rule shipped \\
 Retry time bound (P5) & \code{AbandonAttempt}, Retry cfg & impl projection ($R$) & n/a & undocumented $R \leq M$ \\
 Exact-instance release (A3) & \code{DeliverRelease} & \code{OwnerOnlyRelease} & release witness & no release path shipped \\
 Restart quarantine (A4, T3) & \code{RestartAcceptor} & unsafe-quarantine cfgs & quarantine witness & full-$M$ quarantine \\
@@ -608,7 +608,7 @@ Leader lifecycle (M1--M5) & composition model & n/a & \code{leased\_paxos.py}, t
 
 \subsection{The learner path}
 
-Application code reads \code{IsLeaseOwner()} in \code{PLeaseLearner.cpp} and \code{PaxosLeaseLearner.cpp}, which the \code{LearnChosen} broadcast populates at every node, the sender included.  The owner's learner installs \code{msg.localExpireTime}, the absolute expiry the proposer computed; every other learner installs \code{Now() + msg.duration - 500}.  The source comments call the subtraction a conservative estimate, which it is while delivery takes less than 500 milliseconds; a \code{LearnChosen} delayed by $d > 500\,\mathrm{ms}$ leaves every remote learner believing in the owner's authority $d - 500\,\mathrm{ms}$ past its real end.  Remote learners do not act as owner, but master lookups and election suppression read this state.
+Application code reads \code{IsLeaseOwner()} in \code{PLeaseLearner.cpp} and \code{PaxosLeaseLearner.cpp}, which the \code{LearnChosen} broadcast populates at every node, the sender included.  The owner's learner installs \code{msg.localExpireTime}, the absolute expiry the proposer computed; every other learner installs \code{Now() + msg.duration - 500}.  The source comments call the subtraction a conservative estimate, which it is while delivery takes less than 500 milliseconds; a \code{LearnChosen} delayed by $\Delta > 500\,\mathrm{ms}$ leaves every remote learner believing in the owner's authority $\Delta - 500\,\mathrm{ms}$ past its real end.  Remote learners do not act as owner, but master lookups and election suppression read this state.
 
 \subsection{Clock call paths}
 
